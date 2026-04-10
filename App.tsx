@@ -1,59 +1,81 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
-// Definição do Tipo (Conectando com a lógica da aula anterior)
-type Consulta = {
-  id: number;
-  paciente: string;
-  medico: string;
-  data: string;
-  status: "agendada" | "confirmada" | "cancelada" | "realizada";
-};
+import { ConsultaCard } from "./src/components";
+import { Consulta } from "./src/interfaces/consulta";
+import { Medico } from "./src/interfaces/medico";
+import { Especialidade } from "./src/types/especialidade";
+import { Paciente } from "./src/types/paciente";
 
 export default function App() {
-  // Estado tipado: garante que o objeto siga a interface Consulta
+  // Dados base (simulando o que tínhamos no backend)
+  const cardiologia: Especialidade = {
+    id: 1,
+    nome: "Cardiologia",
+    descricao: "Cuidados com o coração",
+  };
+
+  const medico1: Medico = {
+    id: 1,
+    nome: "Dr. Roberto Silva",
+    crm: "CRM12345",
+    especialidade: cardiologia,
+    ativo: true,
+  };
+
+  const paciente1: Paciente = {
+    id: 1,
+    nome: "Carlos Andrade",
+    cpf: "123.456.789-00",
+    email: "carlos@email.com",
+    telefone: "(11) 98765-4321",
+  };
+
+  // Estado da consulta
   const [consulta, setConsulta] = useState<Consulta>({
     id: 1,
-    paciente: "Carlos Andrade",
-    medico: "Dr. Roberto Silva",
-    data: "20/03/2026",
+    medico: medico1,
+    paciente: paciente1,
+    data: new Date(2026, 2, 10), // 10/03/2026
+    valor: 350,
     status: "agendada",
+    observacoes: "Consulta de rotina",
   });
 
+  // Callbacks que o filho usa para comunicar a intenção de mudança ao pai
   function confirmarConsulta() {
     setConsulta({
       ...consulta,
       status: "confirmada",
     });
-    // Um toque de UX para ganhar pontos com o professor
-    console.log("Consulta confirmada com sucesso!");
+  }
+
+  function cancelarConsulta() {
+    setConsulta({
+      ...consulta,
+      status: "cancelada",
+    });
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>📅 Sistema de Consultas</Text>
-      
-      <View style={styles.card}>
-        <Text style={styles.label}>Paciente:</Text>
-        <Text style={styles.valor}>{consulta.paciente}</Text>
-        
-        <Text style={styles.label}>Médico:</Text>
-        <Text style={styles.valor}>{consulta.medico}</Text>
-        
-        <Text style={styles.label}>Data:</Text>
-        <Text style={styles.valor}>{consulta.data}</Text>
-        
-        <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>Status: {consulta.status.toUpperCase()}</Text>
+      <StatusBar style="light" />
+
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Cabeçalho */}
+        <View style={styles.header}>
+          <Text style={styles.titulo}>Sistema de Consultas</Text>
+          <Text style={styles.subtitulo}>Consulta #{consulta.id}</Text>
         </View>
 
-        {/* Renderização Condicional: Botão só aparece se estiver agendada */}
-        {consulta.status === "agendada" && (
-          <View style={styles.buttonContainer}>
-            <Button title="Confirmar Consulta" color="#2ecc71" onPress={confirmarConsulta} />
-          </View>
-        )}
-      </View>
+        {/* O estado vive no App e o card apenas recebe dados e callbacks */}
+        <ConsultaCard
+          consulta={consulta}
+          onConfirmar={confirmarConsulta}
+          onCancelar={cancelarConsulta}
+        />
+      </ScrollView>
     </View>
   );
 }
@@ -61,50 +83,38 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f6fa",
+    backgroundColor: "#79059C",
+  },
+  scrollContent: {
+    padding: 20,
+    paddingTop: 60,
+  },
+  header: {
     alignItems: "center",
-    justifyContent: "center",
+    marginBottom: 24,
   },
   titulo: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#2f3640",
-    marginBottom: 30,
+    color: "#fff",
+    marginBottom: 8,
   },
-  card: {
-    width: "85%",
-    backgroundColor: "#fff",
-    padding: 25,
-    borderRadius: 15,
-    elevation: 5, // Sombra no Android
-    shadowColor: "#000", // Sombra no iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-  },
-  label: {
-    fontSize: 14,
-    color: "#7f8c8d",
-    marginTop: 10,
-  },
-  valor: {
+  subtitulo: {
     fontSize: 18,
-    fontWeight: "600",
-    color: "#2c3e50",
-    marginBottom: 5,
+    color: "#fff",
+    opacity: 0.9,
   },
-  statusBadge: {
-    backgroundColor: "#ebf5fb",
-    padding: 8,
-    borderRadius: 5,
-    marginTop: 15,
-    alignItems: "center",
+  rodape: {
+    marginTop: 24,
+    padding: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 12,
   },
-  statusText: {
-    color: "#2980b9",
-    fontWeight: "bold",
+  rodapeTexto: {
+    fontSize: 12,
+    color: "#fff",
+    textAlign: "center",
+    lineHeight: 18,
+    marginBottom: 4,
   },
-  buttonContainer: {
-    marginTop: 20,
-  }
 });
