@@ -6,7 +6,7 @@
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Consulta } from "../interfaces/consulta";
-import { StatusConsulta } from "../types/statusConsulta";
+
 
 class ConsultasService {
   /**
