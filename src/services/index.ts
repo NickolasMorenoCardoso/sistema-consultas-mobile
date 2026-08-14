@@ -1,6 +1,6 @@
 /**
- * Exportação centralizada dos services
- */
+ * Exportação centralizada dos services//
+ */ 
 
 export { consultasService } from "./consultasService";
 export { apiClient } from "./apiService";
