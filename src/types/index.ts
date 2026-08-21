@@ -38,6 +38,11 @@ export type Medico = {
 };
 
 export type Consulta = {
+  prioridade?: boolean;
+  emergencia?: boolean;
+  pressaoSistolica?: number;
+  pressaoDiastolica?: number;
+  classificacaoPA?: string;
   id: number;
   pacienteId: number;
   pacienteNome: string;

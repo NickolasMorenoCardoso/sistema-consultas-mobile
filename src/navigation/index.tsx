@@ -19,6 +19,7 @@ import {
   MinhasConsultasScreen,
   AdminScreen,
   AgendamentoScreen,
+  PressaoArterialScreen,
 } from "../screens";
 
 // Tipagem das rotas (boas práticas de TypeScript)
@@ -32,6 +33,7 @@ export type RootStackParamList = {
   MinhasConsultas: undefined;
   Admin: undefined;
   Agendamento: undefined;
+  PressaoArterial: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -181,6 +183,13 @@ export default function Navigation() {
               component={AgendamentoScreen}
               options={{
                 title: "Agendamento",
+              }}
+            />
+            <Stack.Screen
+              name="PressaoArterial"
+              component={PressaoArterialScreen}
+              options={{
+                title: "Pressão Arterial",
               }}
             />
           </>
